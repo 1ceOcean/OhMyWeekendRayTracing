@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OhMyTinyRayTrace.OhMyTracerClass
+﻿namespace OhMyTinyRayTrace.OhMyTracerClass
 {
     using point3 = Vec3;
     internal class Camera

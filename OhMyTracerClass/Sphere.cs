@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OhMyTinyRayTrace.OhMyTrancerInterface;
 
 namespace OhMyTinyRayTrace.OhMyTracerClass
 {
@@ -11,10 +7,11 @@ namespace OhMyTinyRayTrace.OhMyTracerClass
     {
         public Sphere() { }
 
-        public Sphere(point3 center, double radius) 
+        public Sphere(point3 center, double radius,IMaterial material) 
         {
             this.center = center;
             this.radius = radius;
+            this.material = material;
         }
 
         public bool hit(Ray ray, double tMin, double tMax,ref HitRecord record)
@@ -45,11 +42,13 @@ namespace OhMyTinyRayTrace.OhMyTracerClass
             record.p = ray.At(root);
             var ourwardNormal = (record.p - center) / radius;
             record.SetFaceNormal(ray, ourwardNormal);
+            record.material = material;
             return true;
         }
 
 
         public point3 center = new point3(0,0,0);
         public double radius;
+        IMaterial? material;
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace OhMyTinyRayTrace.OhMyTracerClass
 {
+    using OhMyTinyRayTrace.OhMyTrancerInterface;
     using System;
     using point3 = Vec3;
 
@@ -51,8 +52,14 @@
 
             if (world.hit(ray, 0.001, double.PositiveInfinity, ref record)) 
             {
-                point3 target = record.p + record.normal + Vec3.RandomInUnitSphere();
-                return OhMyConvert.ConvertToColor(0.5 * RayColor(new Ray(record.p, target - record.p), world,depth - 1));
+                Ray scattered = new();
+                Color attenuation = new();
+                if (record.material.Scatter(ray, ref record, ref attenuation, ref scattered)) 
+                {
+                    return attenuation * RayColor(scattered, world, depth - 1);
+                }
+
+                return new Color(0, 0, 0);
             }
  
             Vec3 unitDirection = Vec3.UnitVector(Direction);
