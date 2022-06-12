@@ -138,6 +138,14 @@
             return vec - 2 * Dot(vec, normal) * normal;
         }
 
+        public static Vec3 Refract(Vec3 uv, Vec3 n, double etaiOverEtat) 
+        {
+            var cosTheta = Math.Min(Dot(-uv, n), 1.0);
+            Vec3 rOutPerp = etaiOverEtat * (uv + cosTheta * n);
+            Vec3 rOutParallel = -Math.Sqrt(Math.Abs(1.0 - rOutPerp.LengthSquared())) * n;
+            return rOutPerp + rOutParallel;
+        }
+
         public static Vec3 operator +(Vec3 vec1,Vec3 vec2) 
         {
             Vec3 vec = new Vec3();
