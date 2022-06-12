@@ -127,6 +127,19 @@
             }
         }
 
+        public static Vec3 RandomInUnitDisk() 
+        {
+            while (true) 
+            {
+                var p = new Vec3(OhMyUtilis.RandomDoule(-1, 1), OhMyUtilis.RandomDoule(-1, 1), 0);
+                if (p.LengthSquared() >= 1) 
+                {
+                    continue;
+                }
+                return p;
+            }
+        }
+
         public bool NearZero() 
         {
             const double s = 1e-8;

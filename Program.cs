@@ -38,7 +38,12 @@ namespace OhMyTinyRayTrace
 
 
             //Camera
-            Camera camera = new Camera();
+            point3 lookfrom = new point3(3, 3, 2);
+            point3 lookat = new point3(0, 0, -1);
+            Vec3 vup = new Vec3(0, 1, 0);
+            var distToFocus = (lookfrom - lookat).Length();
+            var aperture = 2.0;
+            Camera camera = new Camera(lookfrom, lookat, vup, 20.0, aspectRatio, aperture, distToFocus);
 
             using (var file = new FileStream("../../../image.ppm", FileMode.Create, FileAccess.Write))
             {
@@ -80,22 +85,7 @@ namespace OhMyTinyRayTrace
             image.SaveAsPng("../../../image.png");
         }
 
-        public static double HitSphere(point3 center, double radius,Ray ray) 
-        {
-            Vec3 oc = ray.GetOrigin() - center;
-            var a = ray.GetDirection().LengthSquared();
-            var halfB = Vec3.Dot(oc, ray.GetDirection()) ;
-            var c = oc.LengthSquared() - radius * radius;
-            var discriminant = halfB * halfB -  a * c;
-            if (discriminant < 0)
-            {
-                return -1;
-            }
-            else 
-            {
-                return (-halfB - Math.Sqrt(discriminant)) / a;
-            }
-        }
+
 
     }
 }

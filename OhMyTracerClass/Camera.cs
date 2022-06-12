@@ -3,29 +3,38 @@
     using point3 = Vec3;
     internal class Camera
     {
-        public Camera() 
+        public Camera(point3 lookfrom, point3 lookat, Vec3 vup, double vfov, double aspectRatio, double aperture, double focusDist) 
         {
-            double aspectRatio = 16.0 / 9.0;
-            double viewportHeight = 2.0;
+            double theta = OhMyConvert.ConvertToRadians(vfov);
+            double h = Math.Tan(theta / 2);
+            double viewportHeight = 2.0 * h;
             double viewportWidth = aspectRatio * viewportHeight;
-            double focalLength = 1.0;
 
-            origin = new point3(0, 0, 0);
-            horizontal = new Vec3(viewportWidth, 0, 0);
-            vertical = new Vec3(0, viewportHeight, 0);
-            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - new Vec3(0, 0, focalLength);
+            w = Vec3.UnitVector(lookfrom - lookat);
+            u = Vec3.UnitVector(Vec3.Cross(vup, w));
+            v = Vec3.Cross(w, u);
+
+            origin = lookfrom;
+            horizontal = focusDist * viewportWidth * u;
+            vertical = focusDist * viewportHeight * v;
+            lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - focusDist * w;
+            lensRadius = aperture / 2;
         }
 
         public Ray GetRay(double u, double v) 
         {
-            var direction = lowerLeftCorner + u * horizontal + v * vertical - origin;
-            return new Ray(origin, direction);
+            Vec3 rd = lensRadius * Vec3.RandomInUnitDisk();
+            Vec3 offset = rd.X() * this.u + rd.Y() * this.v;
+            var direction = lowerLeftCorner + u * horizontal + v * vertical - origin - offset;
+            return new Ray(origin + offset, direction);
         }
 
         private point3 origin;
         private point3 lowerLeftCorner;
         private Vec3 horizontal;
         private Vec3 vertical;
+        private Vec3 u, v, w;
+        double lensRadius;
 
     }
 }
