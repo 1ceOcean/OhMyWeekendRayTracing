@@ -9,40 +9,23 @@ namespace OhMyTinyRayTrace
     {
         static void Main(string[] args)
         {
-
+            Array.Sort(args);
             //Image
-            const double aspectRatio = 16.0 / 9.0;
-            const int imageWidth = 400;
+            const double aspectRatio = 3.0 / 2.0;
+            const int imageWidth = 1200;
             int imageHeight = Convert.ToInt32(imageWidth / aspectRatio);
-            const int samplePerPixel = 100;
+            const int samplePerPixel = 500;
             const int maxDepth = 50;
 
             //World
-            HittableList world = new HittableList();
-
-            var materialGround = new Lambertian(new OhMyTracerClass.Color(0.8, 0.8, 0.0));
-            var materialCenter = new Lambertian(new OhMyTracerClass.Color(0.1, 0.2, 0.5));
-            //var materialLeft = new Metal(new OhMyTracerClass.Color(0.8, 0.8, 0.8), 0.3);
-            var materialLeft = new Dielectric(1.5);
-
-            var materialRight = new Metal(new OhMyTracerClass.Color(0.8, 0.6, 0.2), 0.0);
-
-            //var materialRight = new Dielectric(1.5);
-
-
-            world.Add(new Sphere(new point3(0.0, -100.5, -1.0), 100.0, materialGround));
-            world.Add(new Sphere(new point3(0.0, 0.0, -1.0), 0.5, materialCenter));
-            world.Add(new Sphere(new point3(-1.0, 0.0, -1.0), 0.5, materialLeft));
-            world.Add(new Sphere(new point3(-1.0, 0.0, -1.0), -0.4, materialLeft));
-            world.Add(new Sphere(new point3(1.0, 0.0, -1.0), 0.5, materialRight));
-
+            var world = RandomSence();
 
             //Camera
-            point3 lookfrom = new point3(3, 3, 2);
-            point3 lookat = new point3(0, 0, -1);
+            point3 lookfrom = new point3(13, 2, 3);
+            point3 lookat = new point3(0, 0, 0);
             Vec3 vup = new Vec3(0, 1, 0);
-            var distToFocus = (lookfrom - lookat).Length();
-            var aperture = 2.0;
+            var distToFocus = 10.0;
+            var aperture = 0.1;
             Camera camera = new Camera(lookfrom, lookat, vup, 20.0, aspectRatio, aperture, distToFocus);
 
             using (var file = new FileStream("../../../image.ppm", FileMode.Create, FileAccess.Write))
@@ -86,6 +69,57 @@ namespace OhMyTinyRayTrace
         }
 
 
+        public static HittableList RandomSence() 
+        {
+            HittableList World = new HittableList();
 
+            var groundMaterial = new Lambertian(new OhMyTracerClass.Color(0.5, 0.5, 0.5));
+
+            World.Add(new Sphere(new point3(0, -1000, 0), 1000, groundMaterial));
+
+            for (int a = -11; a < 11; a++)
+            {
+                for (int b = -11; b < 11; b++)
+                {
+                    var chooseMatrial = OhMyUtilis.RandomDoule();
+                    point3 center = new point3(a + 0.9 * OhMyUtilis.RandomDoule(), 0.2, b + OhMyUtilis.RandomDoule());
+
+                    if ((center - new point3(4, 0.2, 0)).Length() > 0.9) 
+                    {
+                        OhMyTrancerInterface.IMaterial sphereMatrial;
+
+                        if (chooseMatrial < 0.8)
+                        {
+                            var albedo = OhMyTracerClass.Color.RandomColor() * OhMyTracerClass.Color.RandomColor();
+                            sphereMatrial = new Lambertian(albedo);
+                            World.Add(new Sphere(center, 0.2, sphereMatrial));
+                        }
+                        else if (chooseMatrial < 0.95)
+                        {
+                            var albedo = OhMyTracerClass.Color.RandomColor(0.5, 1);
+                            var fuzz = OhMyUtilis.RandomDoule(0, 0.5);
+                            sphereMatrial = new Metal(albedo, fuzz);
+                            World.Add(new Sphere(center, 0.2, sphereMatrial));
+                        }
+                        else 
+                        {
+                            sphereMatrial = new Dielectric(1.5);
+                            World.Add(new Sphere(center, 0.2, sphereMatrial));
+                        }
+                    }
+                }
+            }
+
+            var material1 = new Dielectric(1.5);
+            World.Add(new Sphere(new point3(0, 1, 0), 1.0, material1));
+
+            var material2 = new Lambertian(new OhMyTracerClass.Color(0.4, 0.2, 0.1));
+            World.Add(new Sphere(new point3(-4, 1, 0), 1.0, material2));
+
+            var material3 = new Metal(new OhMyTracerClass.Color(0.7, 0.6, 0.5), 0.0);
+            World.Add(new Sphere(new point3(4, 1, 0), 1.0, material3));
+
+            return World;
+        } 
     }
 }

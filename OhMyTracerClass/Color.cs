@@ -16,6 +16,16 @@
             return $"{(int)(256 * Math.Clamp(r,0.0,0.999))} {(int)(256 * Math.Clamp(g, 0.0, 0.999))} {(int)(256 * Math.Clamp(b, 0.0, 0.999))}\n";
         }
 
+        public static Color RandomColor() 
+        {
+            return new Color(OhMyUtilis.RandomDoule(0, 1), OhMyUtilis.RandomDoule(0, 1), OhMyUtilis.RandomDoule(0, 1));
+        }
+
+        public static Color RandomColor(double min, double max)
+        {
+            return new Color(OhMyUtilis.RandomDoule(min, max), OhMyUtilis.RandomDoule(min, max), OhMyUtilis.RandomDoule(min, max));
+        }
+
         public Color() { }
 
         public Color(double e0, double e1, double e2) : base(e0, e1, e2) { }
@@ -31,6 +41,7 @@
             return new Color(color1.e[0] * color2.e[0], color1.e[1] * color2.e[1], color1.e[2] * color2.e[2]);
         
         }
+
     }
 
 }
