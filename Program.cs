@@ -9,7 +9,6 @@ namespace OhMyTinyRayTrace
     {
         static void Main(string[] args)
         {
-            Array.Sort(args);
             //Image
             const double aspectRatio = 3.0 / 2.0;
             const int imageWidth = 1200;
